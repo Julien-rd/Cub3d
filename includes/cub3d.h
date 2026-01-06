@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:18:23 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/05 16:02:14 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/06 13:37:02 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdbool.h>
+
+#define FLOOR 0
+#define CEILING 1
 
 int	parse_map(char *input, t_user *user);
 

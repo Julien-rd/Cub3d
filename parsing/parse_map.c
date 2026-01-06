@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:11:39 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/05 16:03:28 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/06 13:52:09 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,83 @@ void	check_format(char *name)
 	}
 }
 
+bool	is_empty_line(char *line)
+{
+	size_t	iter;
+
+	iter = 0;
+	while (line[iter] == 32)
+		iter++;
+	if (line[iter] == '\n')
+		return (true);
+	return (false);
+}
+
+void	skip_whitspaces(char *str, size_t *iter)
+{
+	while (str[*iter] == 32)
+		iter++;
+}
+
+void	check_empty_lines(char *map)
+{
+	size_t	iter;
+	bool	empty_line;
+
+	empty_line = false;
+	iter = 0;
+	while (map[iter])
+	{
+		if (is_empty_line(&map[iter]))
+			empty_line = true;
+		else
+		{
+			if (empty_line == true)
+			{
+				write(2, "Error\nEmpty line in map !\n", 26);
+				exit(1);
+			}
+		}
+		while (map[iter] != '\n' && map[iter])
+			iter++;
+		if (map[iter] != '\0')
+			iter++;
+	}
+}
+
+size_t	map_exists(char *input)
+{
+	size_t	iter;
+	size_t	offset;
+
+	iter = 0;
+	while (input[iter])
+	{
+		if (input[iter] == '\n')
+		{
+			iter++;
+			offset = 0;
+			while (input[iter + offset] == 32)
+				offset++;
+			if (input[iter + offset] == '1')
+				return (iter);
+		}
+		else
+			iter++;
+	}
+	write(2, "Error\nNo map found !\n", 21);
+	exit(1);
+}
+
 void	initialise_data(char *input, t_user *user)
 {
+	size_t	iter;
+
+	iter = map_exists(input);
+	check_empty_lines(&input[iter]);
 	user->start_dir = 'D';
-	user->map = ft_split(input, '\n');
+	user->info = ft_split(input, '\n');
+	user->map = ft_split(&input[iter], '\n');
 	if (user->map == NULL)
 	{
 		perror("initialise_data");
@@ -130,12 +203,222 @@ void	valid_input(t_user *user)
 	}
 }
 
-int	parse_map(char *input, t_user *user)
+char	*ft_realloc(char *in_str, size_t size)
 {
-    // int fd;
-	check_format(input);
-    // fd = open(input, RDONLY);
+	char	*ret_str;
+	size_t	iter;
+
+	iter = 0;
+	ret_str = ft_calloc(size + 1, sizeof(char));
+	if (!ret_str)
+		return (free(in_str), NULL);
+	if (in_str == NULL)
+		return (ret_str);
+	while (in_str[iter] && iter < size - 1)
+	{
+		ret_str[iter] = in_str[iter];
+		iter++;
+	}
+	free(in_str);
+	return (ret_str);
+}
+
+char	*open_arg(char *file_name)
+{
+	char	buffer[1025];
+	int		bytes_read;
+	char	*input;
+	size_t	input_len;
+	int		fd;
+	size_t	iter;
+
+	input_len = 0;
+	input = NULL;
+	fd = open(file_name, O_RDONLY);
+	if (fd == -1)
+	{
+		perror("open");
+		exit(1);
+	}
+	while (1)
+	{
+		bytes_read = read(fd, buffer, 1024);
+		if (bytes_read <= 0)
+			break ;
+		buffer[bytes_read] = '\0';
+		input = ft_realloc(input, bytes_read + input_len);
+		iter = 0;
+		while (buffer[iter])
+		{
+			input[input_len + iter] = buffer[iter];
+			iter++;
+		}
+		input_len = ft_strlen(input);
+	}
+	if (bytes_read == -1)
+	{
+		perror("read");
+		close(fd);
+		free(input);
+		exit(1);
+	}
+	close(fd);
+	return (input);
+}
+
+void extract_color(t_user *user, int flag, size_t pos)
+{
+	char red[4];
+	char blue[4];
+	char green[4];
+	size_t digit;
+	size_t iter;
+	size_t color_digit;
+	
+	digit = 0;
+	iter = 1;
+	if (flag == FLOOR)
+	{
+		if(user->floor.blue != -1)
+			exit(1);
+		while (user->info[pos][iter] == ' ')
+			iter++;
+		while(user->info[pos][iter])
+		{
+			if(user->info[pos][iter] == ',')
+			{
+				iter++;
+				digit++;
+				color_digit = 0;
+				if (digit > 3)
+					exit(1);
+			}
+			if(!ft_isdigit(user->info[pos][iter]))
+				exit(1);
+			if(digit == 0)
+				red[color_digit] = user->info[pos][iter];
+			if(digit == 1)
+				blue[color_digit] = user->info[pos][iter];
+			if(digit == 2)
+				green[color_digit] = user->info[pos][iter];
+			color_digit++;
+			if (color_digit > 3)
+				exit(1);
+			if(digit == 0)
+				red[color_digit] = '\0';
+			if(digit == 1)
+				blue[color_digit] = '\0';
+			if(digit == 2)
+				green[color_digit] = '\0';
+			iter++;
+		}
+		user->floor.red = ft_atoi(red);
+		user->floor.blue = ft_atoi(blue);
+		user->floor.green = ft_atoi(green);
+	}
+	if (flag == CEILING)
+	{
+		if(user->ceiling.blue != -1)
+			exit(1);	
+	}
+}
+
+void	extract_info(t_user *user)
+{
+	size_t	iter;
+	size_t	iter2;
+	size_t offset;
+
+	iter = 0;
+	user->we_path = NULL;
+	user->so_path = NULL;
+	user->ea_path = NULL;
+	user->no_path = NULL;
+	user->floor.red = -1;
+	user->floor.blue = -1;
+	user->floor.green = -1;
+	user->ceiling.red = -1;
+	user->ceiling.blue = -1;
+	user->ceiling.green = -1;
+	while (user->info[iter])
+	{
+		iter2 = 0;
+		offset = 0;
+		if (ft_strncmp("NO ", user->info[iter], 3) == 0)
+		{
+			if (user->no_path != NULL)
+			{
+				write(2, "Error\nInvalid input !\n", 22);
+				exit(1);
+			}
+			user->no_path = user->info[iter];
+			printf("%s\n", user->no_path);
+		}
+		else if (ft_strncmp("SO ", user->info[iter], 3) == 0)
+		{
+			if (user->so_path != NULL)
+			{
+				write(2, "Error\nInvalid input !\n", 22);
+				exit(1);
+			}
+			user->so_path = user->info[iter];
+			printf("%s\n", user->so_path);
+		}
+		else if (ft_strncmp("WE ", user->info[iter], 3) == 0)
+		{
+			if (user->we_path != NULL)
+			{
+				write(2, "Error\nInvalid input !\n", 22);
+				exit(1);
+			}
+			user->we_path = user->info[iter];
+			printf("%s\n", user->we_path);
+		}
+		else if (ft_strncmp("EA ", user->info[iter], 3) == 0)
+		{
+			if (user->ea_path != NULL)
+			{
+				write(2, "Error\nInvalid input !\n", 22);
+				exit(1);
+			}
+			user->ea_path = user->info[iter];
+			printf("%s\n", user->ea_path);
+		}
+		else if (ft_strncmp("F", user->info[iter], 1) == 0)
+			extract_color(user, FLOOR, iter);
+		else if (ft_strncmp("C", user->info[iter], 1) == 0)
+			extract_color(user, CEILING, iter);
+		else if (user->info[iter][iter2] == ' '
+			|| user->info[iter][iter2] == '1')
+		{
+			while (user->info[iter][iter2] == ' ')
+				iter2++;
+			if (user->info[iter][iter2] != '1')
+			{
+				write(2, "Error\nInvalid input !\n", 22);
+				exit(1);
+			}
+			else
+				return ;
+		}
+		else
+		{
+			write(2, "Error\nInvalid input !\n", 22);
+			exit(1);
+		}
+		iter++;
+	}
+}
+
+int	parse_map(char *file_name, t_user *user)
+{
+	char *input;
+
+	check_format(file_name);
+	input = open_arg(file_name);
 	initialise_data(input, user);
+	extract_info(user);
 	valid_input(user);
+	printf("%d\n", user->floor.red);
 	return (0);
 }
