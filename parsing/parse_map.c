@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:11:39 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 13:52:09 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/06 16:11:07 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	free2d(char **str)
 
 int	valid_char(char c)
 {
-	if (c != '1' && c != ' ') //&& c != 'N' && c != 'S' && c != 'W' && c != 'E')
+	if (c != '1' && c != ' ')
 		return (1);
 	else
 		return (0);
@@ -266,26 +266,30 @@ char	*open_arg(char *file_name)
 	return (input);
 }
 
-void extract_color(t_user *user, int flag, size_t pos)
+void	extract_color(t_user *user, int flag, size_t pos)
 {
-	char red[4];
-	char blue[4];
-	char green[4];
-	size_t digit;
-	size_t iter;
-	size_t color_digit;
-	
+	char	red[4];
+	char	blue[4];
+	char	green[4];
+	size_t	digit;
+	size_t	iter;
+	size_t	color_digit;
+
 	digit = 0;
 	iter = 1;
+	color_digit = 0;
 	if (flag == FLOOR)
 	{
-		if(user->floor.blue != -1)
+		if (user->floor.blue != -1)
+		{
+			write(2, "Error\nInvalid input !\n", 22);
 			exit(1);
+		}
 		while (user->info[pos][iter] == ' ')
 			iter++;
-		while(user->info[pos][iter])
+		while (user->info[pos][iter])
 		{
-			if(user->info[pos][iter] == ',')
+			if (user->info[pos][iter] == ',')
 			{
 				iter++;
 				digit++;
@@ -293,41 +297,126 @@ void extract_color(t_user *user, int flag, size_t pos)
 				if (digit > 3)
 					exit(1);
 			}
-			if(!ft_isdigit(user->info[pos][iter]))
+			while (user->info[pos][iter] == ' ')
+				iter++;
+			if (!ft_isdigit(user->info[pos][iter]))
+			{
+				write(2, "Error\nInvalid input !\n", 22);
 				exit(1);
-			if(digit == 0)
+			}
+			if (digit == 0)
 				red[color_digit] = user->info[pos][iter];
-			if(digit == 1)
+			if (digit == 1)
 				blue[color_digit] = user->info[pos][iter];
-			if(digit == 2)
+			if (digit == 2)
 				green[color_digit] = user->info[pos][iter];
 			color_digit++;
 			if (color_digit > 3)
 				exit(1);
-			if(digit == 0)
+			if (digit == 0)
 				red[color_digit] = '\0';
-			if(digit == 1)
+			if (digit == 1)
 				blue[color_digit] = '\0';
-			if(digit == 2)
+			if (digit == 2)
 				green[color_digit] = '\0';
 			iter++;
 		}
 		user->floor.red = ft_atoi(red);
 		user->floor.blue = ft_atoi(blue);
 		user->floor.green = ft_atoi(green);
+		if (user->floor.red > 255 || user->floor.blue > 255
+			|| user->floor.green > 255)
+		{
+			write(2, "Error\nInvalid input !\n", 22);
+			exit(1);
+		}
 	}
 	if (flag == CEILING)
 	{
-		if(user->ceiling.blue != -1)
-			exit(1);	
+		if (user->ceiling.blue != -1)
+		{
+			write(2, "Error\nInvalid input !\n", 22);
+			exit(1);
+		}
+		while (user->info[pos][iter] == ' ')
+			iter++;
+		while (user->info[pos][iter])
+		{
+			if (user->info[pos][iter] == ',')
+			{
+				iter++;
+				digit++;
+				color_digit = 0;
+				if (digit > 3)
+					exit(1);
+			}
+			while (user->info[pos][iter] == ' ')
+				iter++;
+			if (!ft_isdigit(user->info[pos][iter])
+				&& user->info[pos][iter] != ' ')
+			{
+				write(2, "Error\nInvalid input !\n", 22);
+				exit(1);
+			}
+			if (digit == 0)
+				red[color_digit] = user->info[pos][iter];
+			if (digit == 1)
+				blue[color_digit] = user->info[pos][iter];
+			if (digit == 2)
+				green[color_digit] = user->info[pos][iter];
+			color_digit++;
+			if (color_digit > 3)
+			{
+				write(2, "Error\nInvalid input !\n", 22);
+				exit(1);
+			}
+			if (digit == 0)
+				red[color_digit] = '\0';
+			if (digit == 1)
+				blue[color_digit] = '\0';
+			if (digit == 2)
+				green[color_digit] = '\0';
+			iter++;
+		}
+		user->ceiling.red = ft_atoi(red);
+		user->ceiling.blue = ft_atoi(blue);
+		user->ceiling.green = ft_atoi(green);
+		if (user->ceiling.red > 255 || user->ceiling.blue > 255
+			|| user->ceiling.green > 255)
+		{
+			write(2, "Error\nInvalid input !\n", 22);
+			exit(1);
+		}
 	}
+}
+
+void	extract_line(t_user *user, size_t pos, int flag)
+{
+	size_t	start;
+	size_t	end;
+
+	start = 2;
+	while (user->info[pos][start] == ' ')
+		start++;
+	end = ft_strlen(user->info[pos]) - 1;
+	while (user->info[pos][end] == ' ')
+		end--;
+	user->info[pos][end + 1] = '\0';
+	if (flag == NO)
+		user->no_path = &user->info[pos][start];
+	if (flag == SO)
+		user->so_path = &user->info[pos][start];
+	if (flag == WE)
+		user->we_path = &user->info[pos][start];
+	if (flag == EA)
+		user->ea_path = &user->info[pos][start];
 }
 
 void	extract_info(t_user *user)
 {
 	size_t	iter;
 	size_t	iter2;
-	size_t offset;
+	size_t	offset;
 
 	iter = 0;
 	user->we_path = NULL;
@@ -351,8 +440,7 @@ void	extract_info(t_user *user)
 				write(2, "Error\nInvalid input !\n", 22);
 				exit(1);
 			}
-			user->no_path = user->info[iter];
-			printf("%s\n", user->no_path);
+			extract_line(user, iter, NO);
 		}
 		else if (ft_strncmp("SO ", user->info[iter], 3) == 0)
 		{
@@ -361,8 +449,7 @@ void	extract_info(t_user *user)
 				write(2, "Error\nInvalid input !\n", 22);
 				exit(1);
 			}
-			user->so_path = user->info[iter];
-			printf("%s\n", user->so_path);
+			extract_line(user, iter, SO);
 		}
 		else if (ft_strncmp("WE ", user->info[iter], 3) == 0)
 		{
@@ -371,8 +458,7 @@ void	extract_info(t_user *user)
 				write(2, "Error\nInvalid input !\n", 22);
 				exit(1);
 			}
-			user->we_path = user->info[iter];
-			printf("%s\n", user->we_path);
+			extract_line(user, iter, WE);
 		}
 		else if (ft_strncmp("EA ", user->info[iter], 3) == 0)
 		{
@@ -381,8 +467,7 @@ void	extract_info(t_user *user)
 				write(2, "Error\nInvalid input !\n", 22);
 				exit(1);
 			}
-			user->ea_path = user->info[iter];
-			printf("%s\n", user->ea_path);
+			extract_line(user, iter, EA);
 		}
 		else if (ft_strncmp("F", user->info[iter], 1) == 0)
 			extract_color(user, FLOOR, iter);
@@ -414,11 +499,11 @@ int	parse_map(char *file_name, t_user *user)
 {
 	char *input;
 
-	check_format(file_name);
-	input = open_arg(file_name);
+	validate_file_extension(file_name);
+	input = read_file_to_string(file_name);
 	initialise_data(input, user);
 	extract_info(user);
 	valid_input(user);
-	printf("%d\n", user->floor.red);
+	printf("%d\n", user->ceiling.red);
 	return (0);
 }

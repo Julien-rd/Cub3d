@@ -3,7 +3,7 @@ INC_DIR = includes
 CFLAGS = -Wall -Wextra -Werror -Ilibft -MMD -g -I$(INC_DIR)
 OBJ_DIR = obj
 VPATH = parsing
-SRC = main.c parse_map.c
+SRC = main.c parse_map.c read_file_to_string.c
 
 
 OBJ = $(SRC:%.c=obj/%.o)
