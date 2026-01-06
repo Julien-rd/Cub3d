@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 15:49:34 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 16:09:26 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/06 18:13:03 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ static int	s_read(int fd, char *buffer, char *input)
 
 static void	ft_strcpy(char *input, char *buffer)
 {
-    size_t iter;
-    
+	size_t	iter;
+
 	iter = 0;
 	while (buffer[iter])
 	{
@@ -81,7 +81,6 @@ char	*read_file_to_string(char *file_name)
 	int		bytes_read;
 	size_t	input_len;
 
-	
 	input_len = 0;
 	input = NULL;
 	fd = s_open(file_name);

@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:18:23 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 15:59:39 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/06 18:07:49 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,28 @@
 # define WE 4
 # define EA 5
 
-int		parse_map(char *input, t_user *user);
+# define SUCCESS 0
+# define ERROR 1
+# define PERROR 2
+
+//*************** PARSING **************//
+
+// create_and_validate_map
+void	create_and_validate_map(char *input, t_user *user);
+size_t	map_exists(char *input, t_user *user);
+void	check_empty_lines(char *map, t_user *user);
+void	valid_map(t_user *user);
+
+// parse_info
+void	color_info(t_user *user, char flag, size_t pos);
+void	parse_info(t_user *user);
+void	extract_line(t_user *user, size_t pos);
+
+int		parse_input(char *file_name, t_user *user);
 char	*read_file_to_string(char *file_name);
+
+//*************** HELPER **************//
+void	cleanup(t_user *user, int flag, char *msg);
+size_t	skip_spaces(char *str);
 
 #endif

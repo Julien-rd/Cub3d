@@ -2,8 +2,9 @@ NAME = cub3d
 INC_DIR = includes
 CFLAGS = -Wall -Wextra -Werror -Ilibft -MMD -g -I$(INC_DIR)
 OBJ_DIR = obj
-VPATH = parsing
-SRC = main.c parse_map.c read_file_to_string.c
+VPATH = parsing parsing/create_and_validate_map parsing/parse_info helper
+SRC = main.c parse_input.c read_file_to_string.c color_info.c parse_info.c wall_info.c create_and_validate_map.c validate_map.c \
+create_map.c cleanup.c
 
 
 OBJ = $(SRC:%.c=obj/%.o)
