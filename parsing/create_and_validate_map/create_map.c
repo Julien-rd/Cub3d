@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:36:22 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 18:14:46 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/07 11:29:01 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static bool	is_empty_line(char *line)
 	return (false);
 }
 
-void	check_empty_lines(char *map, t_user *user)
+void	check_empty_lines(char *map, char *input, t_user *user)
 {
 	size_t	iter;
 	bool	empty_line;
@@ -38,7 +38,8 @@ void	check_empty_lines(char *map, t_user *user)
 		else
 		{
 			if (empty_line == true)
-				cleanup(user, ERROR, "Error\nEmpty line in map !\n");
+				return (free(input), cleanup(user, ERROR,
+						"Error\nEmpty line in map !\n"));
 		}
 		while (map[iter] != '\n' && map[iter])
 			iter++;
@@ -67,6 +68,7 @@ size_t	map_exists(char *input, t_user *user)
 		else
 			iter++;
 	}
+	free(input);
 	cleanup(user, ERROR, "Error\nNo map found !\n");
 	return (0);
 }

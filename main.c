@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:21:15 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 18:13:09 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/07 11:31:29 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,7 @@ int	main(int argc, char **argv)
 	intialise_data(&user);
 	validate_file_extension(argv[1]);
 	parse_input(argv[1], &user);
+	printf("%s\n", user.we_path);
+	cleanup(&user, SUCCESS, NULL);
 	return (0);
 }

@@ -6,13 +6,13 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:14:03 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 18:13:21 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/07 11:43:58 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void	free2d(char **str)
+void	free2d(char **str)
 {
 	size_t	iter;
 

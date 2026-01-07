@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 15:49:34 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 18:13:03 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/07 11:35:20 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static char	*ft_realloc(char *in_str, size_t size)
 	iter = 0;
 	ret_str = ft_calloc(size + 1, sizeof(char));
 	if (!ret_str)
-		return (free(in_str), NULL);
+		return (perror("ft_realloc"), free(in_str), NULL);
 	if (in_str == NULL)
 		return (ret_str);
 	while (in_str[iter] && iter < size - 1)
@@ -90,6 +90,8 @@ char	*read_file_to_string(char *file_name)
 		if (bytes_read == 0)
 			break ;
 		input = ft_realloc(input, bytes_read + input_len);
+		if (!input)
+			return (close(fd), exit(1), NULL);
 		ft_strcpy(&input[input_len], buffer);
 		input_len = ft_strlen(input);
 	}
