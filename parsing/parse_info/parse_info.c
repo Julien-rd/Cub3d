@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:30:19 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 18:13:38 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/07 14:42:50 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t	skip_spaces(char *str)
 	size_t	iter;
 
 	iter = 0;
-	while (str[iter] && str[iter] != ' ')
+	while (str[iter] && str[iter] == ' ')
 		iter++;
 	return (iter);
 }

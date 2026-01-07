@@ -3,91 +3,108 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eprottun <eprottun@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 12:07:18 by eprottun          #+#    #+#             */
-/*   Updated: 2025/10/20 15:50:55 by eprottun         ###   ########.fr       */
+/*   Created: 2025/04/24 10:46:40 by jromann           #+#    #+#             */
+/*   Updated: 2026/01/07 12:07:59 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	str_count(char const *str, char c)
+static int	ft_wordcount(char const *s, char c)
 {
 	int	i;
-	int	str_count;
+	int	b;
+	int	wordcount;
 
-	i = 0;
-	str_count = 0;
-	while (str[i])
+	i = -1;
+	b = 0;
+	wordcount = 0;
+	while (s[++i])
 	{
-		while (str[i] != c && str[i])
-			i++;
-		if (i > 0)
-			str_count++;
-		while (str[i] == c && str[i])
-			i++;
+		if (s[i] == c && b == 1)
+			b = 0;
+		else if (!(s[i] == c) && b == 0)
+		{
+			wordcount++;
+			b = 1;
+		}
 	}
-	return (str_count);
+	return (wordcount);
 }
 
-static int	ft_strlens(char const *str, char c)
+static int	ft_substrlen(char const *s1, char c)
 {
 	int	i;
+	int	length;
 
-	i = 0;
-	while (str[i] != c && str[i])
-		i++;
-	return (i);
+	i = -1;
+	length = 0;
+	while (s1[++i])
+	{
+		if (s1[i] == c)
+			return (length);
+		length++;
+	}
+	return (length);
 }
 
-static int	ft_str(char ***split, int j, char const *str, char c)
+static char	*ft_create_array(int length, char const *s)
 {
-	int	i;
-
-	i = 0;
-	(*split)[j] = malloc(ft_strlens(str, c) + 1);
-	if (!(*split)[j])
-	{
-		while (--j >= 0)
-			free((*split)[j]);
-		free((*split));
-		return (-1);
-	}
-	while (str[i] && str[i] != c)
-	{
-		(*split)[j][i] = str[i];
-		i++;
-	}
-	(*split)[j][i] = '\0';
-	return (i);
-}
-
-char	**ft_split(char const *str, char c)
-{
-	char	**split;
+	char	*arr;
+	int		k;
+	int		index;
 	int		i;
-	int		j;
-	int		str_lgth;
 
-	split = malloc(sizeof(char *) * (str_count(str, c) + 1));
-	if (split == NULL)
+	index = 0;
+	k = -1;
+	length += 1;
+	i = -1;
+	arr = (char *)malloc(sizeof(char) * length);
+	if (!arr)
 		return (NULL);
-	j = 0;
-	i = 0;
-	str_lgth = 0;
-	while (str[i])
+	while (--length > 0)
+		arr[++k] = s[index++];
+	arr[++k] = 0;
+	return (arr);
+}
+
+static char	**ft_cleanup(char **arr)
+{
+	int	i;
+
+	i = -1;
+	while (arr[++i])
+		free(arr[i]);
+	free(arr);
+	return (NULL);
+}
+
+char	**ft_split(char const *s, char c)
+{
+	int		wordcount;
+	int		i;
+	int		index;
+	int		length;
+	char	**arr;
+
+	wordcount = ft_wordcount(s, c);
+	i = -1;
+	index = 0;
+	arr = (char **)ft_calloc(sizeof(char *), (wordcount + 1));
+	while (wordcount > 0 && arr)
 	{
-		str_lgth = 0;
-		while (str[i] == c && str[i])
-			i++;
-		str_lgth = ft_str(&split, j, &str[i], c);
-		if (str_lgth < 0)
-			return (NULL);
-		if (str_lgth > 0)
-			j++;
-		i += str_lgth;
+		length = ft_substrlen(&s[index], c);
+		if (length)
+		{
+			arr[++i] = ft_create_array(length, &s[index]);
+			if (!arr[i])
+				return (ft_cleanup(arr));
+			wordcount--;
+			index += (length - 1);
+		}
+		index++;
 	}
-	split[j] = NULL;
-	return ((char **)split);
+	return (arr);
 }
