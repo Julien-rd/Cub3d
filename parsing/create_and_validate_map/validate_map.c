@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:41:57 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/07 14:42:24 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/09 17:59:28 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,32 @@ static int	should_be_a_wall(t_user *user, size_t x, size_t y)
 	return (0);
 }
 
+static void player_start_pos(t_user *user, size_t pos, size_t iter)
+{
+	user->start_dir = user->map[pos][iter];
+	if (user->start_dir == 'N')
+	{
+		user->dir_vec.x = 0;
+		user->dir_vec.y = -1;
+	}
+	if (user->start_dir == 'S')
+	{
+		user->dir_vec.x = 0;
+		user->dir_vec.y = 1;
+	}
+	if (user->start_dir == 'W')
+	{
+		user->dir_vec.x = -1;
+		user->dir_vec.y = 0;
+	}
+	if (user->start_dir == 'E')
+	{
+		user->dir_vec.x = 1;
+		user->dir_vec.y = 0;
+	}
+	// calulate_orthogonal_vector(&user->dir_vec, &user->plane_vec, LEFT);
+}
+
 static int	valid_line(t_user *user, size_t pos)
 {
 	size_t	iter;
@@ -57,7 +83,7 @@ static int	valid_line(t_user *user, size_t pos)
 			if ((user->map[pos][iter] == 'N' || user->map[pos][iter] == 'S'
 					|| user->map[pos][iter] == 'E'
 					|| user->map[pos][iter] == 'W') && user->start_dir == 'D')
-				user->start_dir = user->map[pos][iter];
+				player_start_pos(user, pos, iter);
 			else
 				return (1);
 		}
