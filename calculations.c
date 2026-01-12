@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 11:47:08 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/12 20:28:38 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/12 21:29:02 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ static void draw_line(t_dda *ray, t_user *user, int screen_x)
 	init_draw_data(&draw_data, ray, user);
 	while (y < draw_data.start)
 	{
-		ft_put_pixel(user->image, screen_x, y, 0x87CEEB);
+		ft_put_pixel(user->image, screen_x, y, user->ceiling_c); // decke
 		y++;
 	}
 	y = draw_data.start;
@@ -159,7 +159,7 @@ static void draw_line(t_dda *ray, t_user *user, int screen_x)
 	y = draw_data.end + 1;
 	while (y < SCREEN_HEIGHT)
 	{
-		ft_put_pixel(user->image, screen_x, y, 0x8B4513);
+		ft_put_pixel(user->image, screen_x, y, user->floor_c); // floor
 		y++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:19:39 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/12 20:59:09 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/12 21:28:04 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ typedef struct s_user
 	void		*ea_path;
 	t_rgb		floor;
 	t_rgb		ceiling;
+	int			ceiling_c;
+	int			floor_c;
 	void		*mlx;
 	void		*mlx_win;
 	t_texture	n_tex;
