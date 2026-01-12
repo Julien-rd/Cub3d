@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 11:47:08 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/12 20:08:49 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/12 20:28:38 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@ void	calulate_plane_vector(t_vector *dir, t_vector *plane, int flag)
 {
 	if (flag == LEFT)
 	{
-		plane->x = -(FOV_LEN * dir->x);
-		plane->y = FOV_LEN * dir->y;
+		plane->x = -(FOV_LEN * dir->y);
+		plane->y = FOV_LEN * dir->x;
 	}
 	else
 	{
-		plane->y = -(FOV_LEN * dir->y);
-		plane->x = FOV_LEN * dir->x;
+		plane->x = FOV_LEN * dir->y;
+		plane->y = -(FOV_LEN * dir->x);
 	}
 }
 
@@ -76,22 +76,22 @@ static void	calculate_per_wall_dist(t_dda *ray)
 static void	get_wall(t_dda *ray, t_user *user)
 {
 	while (1)
-    {
-        if (ray->side_dist_x < ray->side_dist_y)
-        {
-           	ray->side_dist_x += ray->delta_dist_x;
-            ray->map_x += ray->step_x;
-            ray->side = 0;
-        }
-        else
-        {
-            ray->side_dist_y += ray->delta_dist_y;
-            ray->map_y += ray->step_y;
-            ray->side = 1; 
-        }
-        if (user->map[ray->map_y][ray->map_x] == '1')
-            break;
-    }
+	{
+		if (ray->side_dist_x < ray->side_dist_y)
+		{
+			ray->side_dist_x += ray->delta_dist_x;
+			ray->map_x += ray->step_x;
+			ray->side = 0;
+		}
+		else
+		{
+			ray->side_dist_y += ray->delta_dist_y;
+			ray->map_y += ray->step_y;
+			ray->side = 1; 
+		}
+		if (user->map[ray->map_y][ray->map_x] == '1')
+			break;
+	}
 }
 
 static char *get_texture(t_dda *ray, t_user *user)
@@ -120,14 +120,22 @@ static void init_draw_data(t_draw_utils *draw_data, t_dda *ray, t_user *user)
 {
 	int line_height;
 	
-	line_height = (int)(SCREEN_WIDTH / ray->perp_wall_dist);;
+	line_height = (int)(SCREEN_HEIGHT / ray->perp_wall_dist);
 	draw_data->start = -line_height / 2 + SCREEN_HEIGHT / 2;
 	if (draw_data->start < 0)
 		draw_data->start = 0;
-	draw_data->end = line_height / 2 + SCREEN_HEIGHT / 2;;
-	if (draw_data->end >= SCREEN_WIDTH)
-		draw_data->end = SCREEN_WIDTH - 1;
+	draw_data->end = line_height / 2 + SCREEN_HEIGHT / 2;
+	if (draw_data->end >= SCREEN_HEIGHT)
+		draw_data->end = SCREEN_HEIGHT - 1;
 	draw_data->texture = get_texture(ray, user);
+}
+
+void	ft_put_pixel(t_image image, int x, int y, int color)
+{
+	int	offset;
+
+	offset = (y * image.size_line) + (x * (image.bpp / 8));
+	*(int *)(image.img_data + offset) = color;
 }
 
 static void draw_line(t_dda *ray, t_user *user, int screen_x)
@@ -137,24 +145,23 @@ static void draw_line(t_dda *ray, t_user *user, int screen_x)
 	
 	y = 0;
 	init_draw_data(&draw_data, ray, user);
-    while (y < draw_data.start)
-    {
-        mlx_pixel_put(user->mlx, user->mlx_win, screen_x, y, 0x87CEEB);
-        y++;
-    }
-    y = draw_data.start;
-    while (y <= draw_data.end)
-    {
-        mlx_pixel_put(user->mlx, user->mlx_win, screen_x, y, 0x8B0000 );
-        y++;
-    }
-    y = draw_data.end + 1;
-    while (y < SCREEN_HEIGHT)
-    {
-        mlx_pixel_put(user->mlx, user->mlx_win, screen_x, y, 0x8B4513);
-        y++;
-    }
-	
+	while (y < draw_data.start)
+	{
+		ft_put_pixel(user->image, screen_x, y, 0x87CEEB);
+		y++;
+	}
+	y = draw_data.start;
+	while (y <= draw_data.end)
+	{
+		ft_put_pixel(user->image, screen_x, y, 0x8B0000);
+		y++;
+	}
+	y = draw_data.end + 1;
+	while (y < SCREEN_HEIGHT)
+	{
+		ft_put_pixel(user->image, screen_x, y, 0x8B4513);
+		y++;
+	}
 }
 
 void	calculate_ray(t_user *user, int screen_x)
@@ -168,18 +175,12 @@ void	calculate_ray(t_user *user, int screen_x)
 
 void draw_ray(t_user *user)
 {
-	// int col;
 	int row;
 	
 	row = 0;
 	while(row < SCREEN_WIDTH)
 	{
 		calculate_ray(user, row);
-		// while(col < SCREEN_HEIGHT)
-		// {
-		// 	calculate_ray(user, col);
-		// 	col++;
-		// }
 		row++;
 	}
 }

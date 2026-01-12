@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:19:39 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/09 17:53:16 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/12 20:59:09 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,25 @@ typedef struct s_vector
 	double		x;
 	double		y;
 }				t_vector;
+
+typedef struct s_image
+{
+	char			*img_data;
+	int				bpp;
+	int				size_line;
+	int				endian;
+}					t_image;
+
+typedef struct s_texture
+{
+	void		*img;
+	char		*data;
+	int			width;
+	int			height;
+	int			bpp;
+	int			line_len;
+	int			endian;
+}				t_texture;
 
 typedef struct s_dda
 {
@@ -53,14 +72,20 @@ typedef struct s_user
 	t_vector	plane_vec;
 	char		**map;
 	char		**info;
-	char		*no_path;
-	char		*so_path;
-	char		*we_path;
-	char		*ea_path;
+	void		*no_path;
+	void		*so_path;
+	void		*we_path;
+	void		*ea_path;
 	t_rgb		floor;
 	t_rgb		ceiling;
 	void		*mlx;
 	void		*mlx_win;
+	t_texture	n_tex;
+	t_texture	s_tex;
+	t_texture	w_tex;
+	t_texture	e_tex;
+	void		*img;
+	t_image		image;
 }				t_user;
 
 #endif
