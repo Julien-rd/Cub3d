@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 11:47:08 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/09 18:08:33 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/12 18:56:36 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ static void init_draw_data(t_draw_utils *draw_data, t_dda *ray, t_user *user)
 	
 	line_height = (int)(SCREEN_WIDTH / ray->perp_wall_dist);;
 	draw_data->start = line_height / 2 + SCREEN_WIDTH / 2;
+	// printf("%d\n", draw_data->start);
 	if (draw_data->start < 0)
 		draw_data->start = 0;
 	draw_data->end = line_height / 2 + SCREEN_WIDTH / 2;
