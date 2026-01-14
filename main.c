@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:21:15 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/14 11:55:54 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/14 12:23:50 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,33 +72,61 @@ void	set_up_hooks(t_user *user)
 static void	open_window(t_user *user)
 {
 	user->mlx = mlx_init();
-	user->mlx_win = mlx_new_window(user->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
+	user->mlx_win = mlx_new_window(user->mlx, SCREEN_WIDTH, SCREEN_HEIGHT,
+			"cub3d");
 	user->img = mlx_new_image(user->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
 	user->image.img_data = mlx_get_data_addr(user->img, &user->image.bpp,
 			&user->image.size_line, &user->image.endian);
 }
 
-// static void load_texture(t_user *user)
-// {
-// 	user->n_tex.img = mlx_xpm_file_to_image(user->mlx, user->no_path, &user->n_tex.width, &user->n_tex.height);
-// 	user->n_tex.data = mlx_get_data_addr(user->n_tex.img, &user->n_tex.bpp, &user->n_tex.line_len, &user->n_tex.endian);
+static void	load_textures(t_user *user)
+{
+	int	width;
+	int	height;
+	int	bpp;
+	int	line_len;
+	int	endian;
 
-// 	user->s_tex.img = mlx_xpm_file_to_image(user->mlx, user->so_path, &user->s_tex.width, &user->s_tex.height);
-// 	user->s_tex.data = mlx_get_data_addr(user->s_tex.img, &user->s_tex.bpp, &user->s_tex.line_len, &user->s_tex.endian);
-	
-// 	user->w_tex.img = mlx_xpm_file_to_image(user->mlx, user->we_path, &user->w_tex.width, &user->w_tex.height);
-// 	user->w_tex.data = mlx_get_data_addr(user->w_tex.img, &user->w_tex.bpp, &user->w_tex.line_len, &user->w_tex.endian);
-	
-// 	user->e_tex.img = mlx_xpm_file_to_image(user->mlx, user->ea_path, &user->e_tex.width, &user->e_tex.height);
-// 	user->e_tex.data = mlx_get_data_addr(user->e_tex.img, &user->e_tex.bpp, &user->e_tex.line_len, &user->e_tex.endian);
-// }
+	user->n_tex.img = mlx_xpm_file_to_image(user->mlx, user->no_path, &width,
+			&height);
+	if (!user->n_tex.img)
+		cleanup(user, ERROR, "Error\nFailed to load north texture\n");
+	user->n_tex.data = mlx_get_data_addr(user->n_tex.img, &bpp, &line_len,
+			&endian);
+	user->n_tex.width = width;
+	user->n_tex.height = height;
+	user->s_tex.img = mlx_xpm_file_to_image(user->mlx, user->so_path, &width,
+			&height);
+	if (!user->s_tex.img)
+		cleanup(user, ERROR, "Error\nFailed to load south texture\n");
+	user->s_tex.data = mlx_get_data_addr(user->s_tex.img, &bpp, &line_len,
+			&endian);
+	user->s_tex.width = width;
+	user->s_tex.height = height;
+	user->w_tex.img = mlx_xpm_file_to_image(user->mlx, user->we_path, &width,
+			&height);
+	if (!user->w_tex.img)
+		cleanup(user, ERROR, "Error\nFailed to load west texture\n");
+	user->w_tex.data = mlx_get_data_addr(user->w_tex.img, &bpp, &line_len,
+			&endian);
+	user->w_tex.width = width;
+	user->w_tex.height = height;
+	user->e_tex.img = mlx_xpm_file_to_image(user->mlx, user->ea_path, &width,
+			&height);
+	if (!user->e_tex.img)
+		cleanup(user, ERROR, "Error\nFailed to load east texture\n");
+	user->e_tex.data = mlx_get_data_addr(user->e_tex.img, &bpp, &line_len,
+			&endian);
+	user->e_tex.width = width;
+	user->e_tex.height = height;
+}
 
 static unsigned int	extract_color(t_rgb color)
 {
 	return ((color.red << 16) | (color.green << 8) | color.blue);
 }
 
-static void convert_color(t_user *user)
+static void	convert_color(t_user *user)
 {
 	user->ceiling_c = extract_color(user->ceiling);
 	user->floor_c = extract_color(user->floor);
@@ -115,8 +143,8 @@ int	main(int argc, char **argv)
 	validate_file_extension(argv[1]);
 	parse_input(argv[1], &user);
 	convert_color(&user);
-	// load_texture(&user);
 	open_window(&user);
+	load_textures(&user);
 	draw_ray(&user);
 	mlx_put_image_to_window(user.mlx, user.mlx_win, user.img, 0, 0);
 	set_up_hooks(&user);

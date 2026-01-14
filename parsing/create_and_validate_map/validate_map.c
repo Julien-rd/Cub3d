@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:41:57 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/12 20:16:37 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/14 12:01:16 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void player_start_pos(t_user *user, size_t pos, size_t iter)
 	}
 	user->player_pos.x = (double)iter + 0.5;
 	user->player_pos.y = (double)pos + 0.5;
-	calulate_plane_vector(&user->player_pos, &user->plane_vec, RIGHT);
+	calulate_plane_vector(&user->dir_vec, &user->plane_vec, RIGHT);
 }
 
 static int	valid_line(t_user *user, size_t pos)

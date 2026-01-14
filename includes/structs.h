@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:19:39 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/14 11:48:16 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/14 12:10:14 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,10 @@ typedef struct s_user
 	t_vector		plane_vec;
 	char			**map;
 	char			**info;
-	void			*no_path;
-	void			*so_path;
-	void			*we_path;
-	void			*ea_path;
+	char			*no_path;
+	char			*so_path;
+	char			*we_path;
+	char			*ea_path;
 	t_rgb			floor;
 	t_rgb			ceiling;
 	unsigned int	ceiling_c;

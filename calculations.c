@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 11:47:08 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/12 21:29:02 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/14 12:23:04 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,39 +87,42 @@ static void	get_wall(t_dda *ray, t_user *user)
 		{
 			ray->side_dist_y += ray->delta_dist_y;
 			ray->map_y += ray->step_y;
-			ray->side = 1; 
+			ray->side = 1;
 		}
 		if (user->map[ray->map_y][ray->map_x] == '1')
-			break;
+			break ;
 	}
 }
 
-static char *get_texture(t_dda *ray, t_user *user)
+static t_texture	*get_texture(t_dda *ray, t_user *user)
 {
-	if(ray->side == 0)
+	if (ray->side == 0)
 	{
-		if(ray->ray_dir_x >= 0)
-			return user->ea_path;
-		return user->we_path;
+		if (ray->ray_dir_x >= 0)
+			return (&user->e_tex);
+		return (&user->w_tex);
 	}
 	else
 	{
-		if(ray->ray_dir_y >= 0)
-			return user->so_path;
-		return user->no_path;
+		if (ray->ray_dir_y >= 0)
+			return (&user->s_tex);
+		return (&user->n_tex);
 	}
 }
 
-typedef struct s_draw_utils {
-	int start;
-	int end;
-	char *texture;
-} t_draw_utils;
-
-static void init_draw_data(t_draw_utils *draw_data, t_dda *ray, t_user *user)
+typedef struct s_draw_utils
 {
-	int line_height;
-	
+	int				start;
+	int				end;
+	t_texture		*texture;
+	double			wall_x;
+	int				tex_x;
+}					t_draw_utils;
+
+static void	init_draw_data(t_draw_utils *draw_data, t_dda *ray, t_user *user)
+{
+	int	line_height;
+
 	line_height = (int)(SCREEN_HEIGHT / ray->perp_wall_dist);
 	draw_data->start = -line_height / 2 + SCREEN_HEIGHT / 2;
 	if (draw_data->start < 0)
@@ -128,6 +131,16 @@ static void init_draw_data(t_draw_utils *draw_data, t_dda *ray, t_user *user)
 	if (draw_data->end >= SCREEN_HEIGHT)
 		draw_data->end = SCREEN_HEIGHT - 1;
 	draw_data->texture = get_texture(ray, user);
+	if (ray->side == 0)
+		draw_data->wall_x = ray->pos_y + ray->perp_wall_dist * ray->ray_dir_y;
+	else
+		draw_data->wall_x = ray->pos_x + ray->perp_wall_dist * ray->ray_dir_x;
+	draw_data->wall_x -= floor(draw_data->wall_x);
+	draw_data->tex_x = (int)(draw_data->wall_x
+			* (double)draw_data->texture->width);
+	if ((ray->side == 0 && ray->ray_dir_x > 0) || (ray->side == 1
+			&& ray->ray_dir_y < 0))
+		draw_data->tex_x = draw_data->texture->width - draw_data->tex_x - 1;
 }
 
 void	ft_put_pixel(t_image image, int x, int y, int color)
@@ -138,47 +151,62 @@ void	ft_put_pixel(t_image image, int x, int y, int color)
 	*(int *)(image.img_data + offset) = color;
 }
 
-static void draw_line(t_dda *ray, t_user *user, int screen_x)
+static void	draw_line(t_dda *ray, t_user *user, int screen_x)
 {
-	t_draw_utils draw_data;
-	int y;
-	
-	y = 0;
+	t_draw_utils	draw_data;
+	int				y;
+	int				tex_y;
+	int				color;
+	double			step;
+	double			tex_pos;
+
 	init_draw_data(&draw_data, ray, user);
+	y = 0;
 	while (y < draw_data.start)
 	{
-		ft_put_pixel(user->image, screen_x, y, user->ceiling_c); // decke
+		ft_put_pixel(user->image, screen_x, y, user->ceiling_c);
 		y++;
 	}
+	step = (double)draw_data.texture->height / (draw_data.end
+			- draw_data.start);
+	tex_pos = 0;
 	y = draw_data.start;
 	while (y <= draw_data.end)
 	{
-		ft_put_pixel(user->image, screen_x, y, 0x8B0000);
+		tex_y = (int)tex_pos;
+		if (tex_y >= draw_data.texture->height)
+			tex_y = draw_data.texture->height - 1;
+		tex_pos += step;
+		color = *(int *)(draw_data.texture->data + (tex_y
+					* draw_data.texture->line_len + draw_data.tex_x
+					* (draw_data.texture->bpp / 8)));
+		ft_put_pixel(user->image, screen_x, y, color);
 		y++;
 	}
 	y = draw_data.end + 1;
 	while (y < SCREEN_HEIGHT)
 	{
-		ft_put_pixel(user->image, screen_x, y, user->floor_c); // floor
+		ft_put_pixel(user->image, screen_x, y, user->floor_c);
 		y++;
 	}
 }
 
 void	calculate_ray(t_user *user, int screen_x)
 {
-	t_dda ray;
+	t_dda	ray;
+
 	init_dda(&ray, user, screen_x);
 	get_wall(&ray, user);
 	calculate_per_wall_dist(&ray);
 	draw_line(&ray, user, screen_x);
 }
 
-void draw_ray(t_user *user)
+void	draw_ray(t_user *user)
 {
 	int row;
-	
+
 	row = 0;
-	while(row < SCREEN_WIDTH)
+	while (row < SCREEN_WIDTH)
 	{
 		calculate_ray(user, row);
 		row++;
