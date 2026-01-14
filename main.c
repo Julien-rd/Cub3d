@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:21:15 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/12 21:29:23 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/14 11:55:54 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,16 +93,9 @@ static void	open_window(t_user *user)
 // 	user->e_tex.data = mlx_get_data_addr(user->e_tex.img, &user->e_tex.bpp, &user->e_tex.line_len, &user->e_tex.endian);
 // }
 
-static int	extract_color(t_rgb color)
+static unsigned int	extract_color(t_rgb color)
 {
-	int		r;
-	int		g;
-	int		b;
-
-	r = (color.red >> 16) & 0xFF;
-	g = (color.green >> 8) & 0xFF;
-	b = color.blue & 0xFF;
-	return ((r << 16) | (g << 8) | b);
+	return ((color.red << 16) | (color.green << 8) | color.blue);
 }
 
 static void convert_color(t_user *user)
