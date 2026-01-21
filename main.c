@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:21:15 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/21 13:54:21 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/21 14:37:51 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,24 @@ static void	convert_color(t_user *user)
 	user->ceiling_c = extract_color(user->ceiling);
 	user->floor_c = extract_color(user->floor);
 }
+void	fill_spaces_with_walls(t_user *user)
+{
+	size_t	y;
+	size_t	x;
+
+	y = 0;
+	while (user->map[y])
+	{
+		x = 0;
+		while (user->map[y][x])
+		{
+			if (user->map[y][x] == ' ')
+				user->map[y][x] = '1';
+			x++;
+		}
+		y++;
+	}
+}
 
 int	main(int argc, char **argv)
 {
@@ -124,6 +142,7 @@ int	main(int argc, char **argv)
 	intialise_data(&user);
 	validate_file_extension(argv[1]);
 	parse_input(argv[1], &user);
+	fill_spaces_with_walls(&user);
 	convert_color(&user);
 	open_window(&user);
 	load_textures(&user);

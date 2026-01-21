@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 13:54:43 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/21 14:12:27 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/21 14:25:25 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,46 @@ static int	close_hook(t_user *user)
 
 static int	key_hook(int keycode, t_user *user)
 {
+	int	moved;
+
+	moved = 0;
 	if (keycode == 65307)
 		cleanup(user, SUCCESS, NULL);
-	if (keycode == 119) // W
+	if (keycode == 119)
+	{
 		move_forward(user);
-	if (keycode == 115) // S
+		moved = 1;
+	}
+	if (keycode == 115)
+	{
 		move_backward(user);
-	if (keycode == 97) // A
+		moved = 1;
+	}
+	if (keycode == 97)
+	{
 		move_left(user);
-	if (keycode == 100) // D
+		moved = 1;
+	}
+	if (keycode == 100)
+	{
 		move_right(user);
-	if (keycode == 65361) // Left Arrow
+		moved = 1;
+	}
+	if (keycode == 65361)
+	{
 		rotate_left(user);
-	if (keycode == 65363) // Right Arrow
+		moved = 1;
+	}
+	if (keycode == 65363)
+	{
 		rotate_right(user);
-	draw_ray(user);
-	mlx_put_image_to_window(user->mlx, user->mlx_win, user->img, 0, 0);
+		moved = 1;
+	}
+	if (moved)
+	{
+		draw_ray(user);
+		mlx_put_image_to_window(user->mlx, user->mlx_win, user->img, 0, 0);
+	}
 	return (0);
 }
 
