@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 13:54:43 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/21 14:07:43 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/21 14:12:27 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,15 @@ static int	key_hook(int keycode, t_user *user)
 		move_left(user);
 	if (keycode == 100) // D
 		move_right(user);
+	if (keycode == 65361) // Left Arrow
+		rotate_left(user);
+	if (keycode == 65363) // Right Arrow
+		rotate_right(user);
+	draw_ray(user);
+	mlx_put_image_to_window(user->mlx, user->mlx_win, user->img, 0, 0);
 	return (0);
 }
 
-// if (keycode == 65361)  // Left Arrow
-//     rotate_left(user);
-// if (keycode == 65363)  // Right Arrow
-//     rotate_right(user);
 void	set_up_hooks(t_user *user)
 {
 	mlx_hook(user->mlx_win, 2, 1L << 0, key_hook, user);
