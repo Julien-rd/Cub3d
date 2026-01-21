@@ -6,15 +6,15 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 17:01:41 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/14 11:54:38 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/21 13:51:53 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void check_2dlen(t_user *user, char **colors)
+static void	check_2dlen(t_user *user, char **colors)
 {
-	size_t iter;
+	size_t	iter;
 
 	iter = 0;
 	while (colors[iter])
@@ -77,8 +77,8 @@ static void	convert_colors(t_user *user, char **colors, char flag)
 	if (flag == 'F')
 	{
 		user->floor.red = ft_atoi(colors[0]);
-		user->floor.blue = ft_atoi(colors[1]);
-		user->floor.green = ft_atoi(colors[2]);
+		user->floor.green = ft_atoi(colors[1]);
+		user->floor.blue = ft_atoi(colors[2]);
 		if (user->floor.red == -1 || user->floor.blue == -1
 			|| user->floor.green == -1)
 			return (free2d(colors), cleanup(user, ERROR,
@@ -87,8 +87,8 @@ static void	convert_colors(t_user *user, char **colors, char flag)
 	if (flag == 'C')
 	{
 		user->ceiling.red = ft_atoi(colors[0]);
-		user->ceiling.blue = ft_atoi(colors[1]);
-		user->ceiling.green = ft_atoi(colors[2]);
+		user->ceiling.green = ft_atoi(colors[1]);
+		user->ceiling.blue = ft_atoi(colors[2]);
 		if (user->ceiling.red == -1 || user->ceiling.blue == -1
 			|| user->ceiling.green == -1)
 			return (free2d(colors), cleanup(user, ERROR,

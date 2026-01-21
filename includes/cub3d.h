@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:18:23 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/09 18:05:54 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/21 14:07:28 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@
 # define ERROR 1
 # define PERROR 2
 
+#define MOVE_S 0.05
+#define ROT_S 0.03
+
 //*************** PARSING **************//
 
 // create_and_validate_map
@@ -64,5 +67,13 @@ void	free2d(char **str);
 size_t	skip_spaces(char *str);
 void	calulate_plane_vector(t_vector *dir, t_vector *plane, int flag);
 void draw_ray(t_user *user);
+void	set_up_hooks(t_user *user);
+
+//*************** MOVEMENT **************//
+
+void move_forward(t_user *user);
+void move_backward(t_user *user);
+void move_left(t_user *user);
+void move_right(t_user *user);
 
 #endif
