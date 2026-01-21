@@ -6,7 +6,7 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:19:39 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/14 12:10:14 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/21 15:30:27 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,15 @@ typedef struct s_texture
 	int				line_len;
 	int				endian;
 }					t_texture;
+
+typedef struct s_draw_utils
+{
+	int				start;
+	int				end;
+	t_texture		*texture;
+	double			wall_x;
+	int				tex_x;
+}					t_draw_utils;
 
 typedef struct s_dda
 {

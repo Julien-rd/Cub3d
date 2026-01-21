@@ -6,11 +6,22 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 17:02:58 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/06 17:19:23 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/21 15:13:43 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+void check_extensions(t_user *user, char *path)
+{
+	size_t len;
+
+	len = ft_strlen(path);
+	if (len < 5)
+		cleanup(user, ERROR, "Error\nWrong path extension!\n");
+	if (ft_strncmp(".xpm" , &path[len - 4], 4) != 0)
+		cleanup(user, ERROR, "Error\nWrong path extension!\n");
+}
 
 void	extract_line(t_user *user, size_t pos)
 {
@@ -25,11 +36,23 @@ void	extract_line(t_user *user, size_t pos)
 		end--;
 	user->info[pos][end + 1] = '\0';
 	if (user->info[pos][0] == 'N')
+	{
 		user->no_path = &user->info[pos][start];
+		check_extensions(user, user->no_path);
+	}
 	if (user->info[pos][0] == 'S')
+	{
 		user->so_path = &user->info[pos][start];
+		check_extensions(user, user->so_path);
+	}
 	if (user->info[pos][0] == 'W')
+	{
 		user->we_path = &user->info[pos][start];
+		check_extensions(user, user->we_path);
+	}
 	if (user->info[pos][0] == 'E')
+	{
 		user->ea_path = &user->info[pos][start];
+		check_extensions(user, user->ea_path);
+	}
 }

@@ -6,13 +6,37 @@
 /*   By: jromann <jromann@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 14:13:14 by jromann           #+#    #+#             */
-/*   Updated: 2026/01/21 14:23:02 by jromann          ###   ########.fr       */
+/*   Updated: 2026/01/21 15:53:46 by jromann          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	rotate_left(t_user *user)
+// void	rotate_left(t_user *user)
+// {
+// 	double	old_dir_x;
+// 	double	old_dir_y;
+
+// 	old_dir_x = user->dir_vec.x;
+// 	old_dir_y = user->dir_vec.y;
+// 	user->dir_vec.x = old_dir_x * cos(ROT_S) - old_dir_y * sin(ROT_S);
+// 	user->dir_vec.y = old_dir_x * sin(ROT_S) + old_dir_y * cos(ROT_S);
+// 	calulate_plane_vector(&user->dir_vec, &user->plane_vec, RIGHT);
+// }
+
+// void	rotate_right(t_user *user)
+// {
+// 	double	old_dir_x;
+// 	double	old_dir_y;
+
+// 	old_dir_x = user->dir_vec.x;
+// 	old_dir_y = user->dir_vec.y;
+// 	user->dir_vec.x = old_dir_x * cos(-ROT_S) - old_dir_y * sin(-ROT_S);
+// 	user->dir_vec.y = old_dir_x * sin(-ROT_S) + old_dir_y * cos(-ROT_S);
+// 	calulate_plane_vector(&user->dir_vec, &user->plane_vec, LEFT);
+// }
+
+void	rotate_right(t_user *user)
 {
 	double	dir_x;
 	double	plane_x;
@@ -32,7 +56,7 @@ void	rotate_left(t_user *user)
 	user->dir_vec.y /= len;
 }
 
-void	rotate_right(t_user *user)
+void	rotate_left(t_user *user)
 {
 	double dir_x;
 	double plane_x;
