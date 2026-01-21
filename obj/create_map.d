@@ -1,2 +1,0 @@
-obj/create_map.o: parsing/create_and_validate_map/create_map.c \
-  includes/cub3d.h includes/../libft/libft.h includes/structs.h
